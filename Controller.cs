@@ -1,7 +1,6 @@
 ﻿/* Author: Max Maus
  * Controller.cs
  * 8/30/20
- * 
  */
 
 using System;
@@ -10,9 +9,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Timers;
 
 namespace Alarm501
 {
+    /// <summary>
+    /// This class handles much of the backend code for the program, including state changes, timers, and various other things
+    /// </summary>
     public class Controller
     {
         /// <summary>
@@ -26,6 +29,7 @@ namespace Alarm501
         /// </summary>
         public AlarmStates state = AlarmStates.Off;
 
+        private int snoozeTime;
         /// <summary>
         /// An integer which denotes the number of alarms created so far.
         /// </summary>
@@ -40,11 +44,21 @@ namespace Alarm501
         /// <summary>
         /// References the View object through which the user interaction occurs
         /// </summary>
-        View view;
+        private View view;
 
+        private System.Timers.Timer timer;
+
+        // Just a divider to help separate the methods and constructor from the properties
+
+        /// <summary>
+        /// Initializes the controller, setting its view as well as starting the timer.
+        /// </summary>
+        /// <param name="v"></param>
         public Controller(View v)
         {
             view = v;
+            timer = CreateTimer();
+            timer.Elapsed += SecondsTimer_Elapsed;
         }
 
         /// <summary>
@@ -98,6 +112,7 @@ namespace Alarm501
                     if(s == AlarmStates.Snoozing)
                     {
                         state = AlarmStates.Snoozing;
+                        snoozeTime = 30;
                     }
                     else if (s == AlarmStates.Off)
                     {
@@ -118,5 +133,45 @@ namespace Alarm501
             view.UpdateTextBox(s);
         }
 
+
+
+        /// <summary>
+        /// Creates a timer for the alarm clock to run on
+        /// </summary>
+        private System.Timers.Timer CreateTimer()
+        {
+            System.Timers.Timer secondsTimer = new System.Timers.Timer(1000);            
+            secondsTimer.AutoReset = true;
+            secondsTimer.Enabled = true;
+            return secondsTimer;
+        }
+
+        private void SecondsTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if(state == AlarmStates.Running)
+            {
+
+                string now = DateTime.Now.ToString("HH:mm:ss");
+                foreach (Alarm a in Alarms)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    if (a.Active && now.Equals(a.FormattedTime))
+                    {
+                        UpdateState(AlarmStates.Beeping);
+                        view.UpdateTextBox(AlarmStates.Beeping);
+                    }
+              
+                }
+            }
+
+            else if (state == AlarmStates.Snoozing)
+            {
+                snoozeTime -= 1;
+                if(snoozeTime <= 0)
+                {
+                    UpdateState(AlarmStates.Beeping);
+                }
+            }
+        }
     }
 }

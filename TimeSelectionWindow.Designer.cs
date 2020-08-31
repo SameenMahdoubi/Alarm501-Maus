@@ -72,7 +72,7 @@
             this.uXTimeSelector.Name = "uXTimeSelector";
             this.uXTimeSelector.Size = new System.Drawing.Size(200, 20);
             this.uXTimeSelector.TabIndex = 3;
-            this.uXTimeSelector.Value = new System.DateTime(2020, 8, 30, 20, 29, 8, 0);
+            this.uXTimeSelector.Value = new System.DateTime(2020, 8, 30, 23, 13, 53, 0);
             // 
             // TimeSelectionWindow
             // 

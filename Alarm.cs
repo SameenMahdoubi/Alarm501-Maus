@@ -61,6 +61,50 @@ namespace Alarm501
         }
 
         /// <summary>
+        /// The time formatted in HH:mm:ss format
+        /// </summary>
+        public string FormattedTime
+        {
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+                if(pm == true)
+                {
+                    sb.Append((hours + 12).ToString());
+                }
+                else if(hours < 9)
+                {
+                    sb.Append("0" + hours.ToString());
+                }
+                else
+                {
+                    sb.Append(hours.ToString());
+                }
+                sb.Append(":");
+
+                if (minutes < 9)
+                {
+                    sb.Append("0" + minutes.ToString());
+                }
+                else
+                {
+                    sb.Append(minutes.ToString());
+                }
+                sb.Append(":");
+
+                if (seconds < 9)
+                {
+                    sb.Append("0" + seconds.ToString());
+                }
+                else
+                {
+                    sb.Append(seconds.ToString());
+                }
+                return sb.ToString();
+            }
+        }
+
+        /// <summary>
         /// A boolean representing whether the alarm is set to trigger in AM (false) or PM (true)
         /// </summary>
         private bool pm;
@@ -100,8 +144,6 @@ namespace Alarm501
             sb.Append(hours.ToString());
             sb.Append(":"); 
             sb.Append(minutes.ToString());
-            sb.Append(":");
-            sb.Append(seconds.ToString());
             if(pm == true)
             {
                 sb.Append(" PM");
